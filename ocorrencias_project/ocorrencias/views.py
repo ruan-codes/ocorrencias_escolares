@@ -14,8 +14,8 @@ from django import shortcuts
 from django import contrib
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from models import Ocorrencia
-from forms import OcorrenciaForm
+from .models import Ocorrencia
+from .forms import OcorrenciaForm
 
 def cadastrar(request):
     if request.method == "POST":
