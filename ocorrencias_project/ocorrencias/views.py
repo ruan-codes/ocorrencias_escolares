@@ -1,21 +1,8 @@
-import collections
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import shortcuts
-from django import contrib
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Ocorrencia
 from .forms import OcorrenciaForm
+
 
 def cadastrar(request):
     if request.method == "POST":
@@ -54,5 +41,32 @@ def listar(request):
     }
 
     return render(request, "ocorrencias/listar.html", context)
+
+def detalhe(request, pk):
+    ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
+    return render(request, "ocorrencias/detalhe.html", {"ocorrencia": ocorrencia})
+
+def editar(request, pk):
+    ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
+    if request.method == "POST":
+        form = OcorrenciaForm(request.POST, instance=ocorrencia)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Ocorrência atualizada com sucesso!")
+            return redirect("detalhe", pk=pk)
+    else:
+        form = OcorrenciaForm(instance=ocorrencia)
+    
+    return render(request, "ocorrencias/editar.html", {"form": form, "ocorrencia": ocorrencia})
+
+def excluir(request, pk):
+    ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
+    if request.method == "POST":
+        ocorrencia.delete()
+        messages.success(request, "Ocorrência excluída com sucesso!")
+        return redirect("listar")
+    
+    return render(request, "ocorrencias/excluir.html", {"ocorrencia": ocorrencia})
+        
     
     
