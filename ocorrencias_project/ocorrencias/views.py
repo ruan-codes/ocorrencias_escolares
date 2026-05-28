@@ -3,6 +3,30 @@ from django.contrib import messages
 from .models import Ocorrencia
 from .forms import OcorrenciaForm
 
+def dashboard(request):
+    total = Ocorrencia.objects.count()
+    leves = Ocorrencia.objects.filter(gravidade="leve").count()
+    medias = Ocorrencia.objects.filter(gravidade="media").count()
+    graves = Ocorrencia.objects.filter(gravidade="grave").count()
+    recentes = Ocorrencia.objects.all()[:5]
+    
+    cursos_data = []
+    for valor, label in Ocorrencia.CURSOS:
+        quantidade = Ocorrencia.objects.filter(curso=valor).count()
+        cursos_data.append({"curso": label, "quantidade": quantidade})
+        
+    context = {
+        "total": total,
+        "leves": leves,
+        "medias": medias,
+        "graves": graves,
+        "recentes": recentes,
+        "cursos_data": cursos_data,
+    }
+    
+    return render(request, "ocorrencias/dashboard.html", context)
+    
+    
 
 def cadastrar(request):
     if request.method == "POST":

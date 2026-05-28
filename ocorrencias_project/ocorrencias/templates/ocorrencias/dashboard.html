@@ -1,0 +1,139 @@
+{% extends 'ocorrencias/base.html' %}
+
+{% block content %}
+
+{# Cards de totais #}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-dark shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-0 small">Total de Ocorrências</p>
+                    <h2 class="mb-0 fw-bold">{{ total }}</h2>
+                </div>
+                <i class="bi bi-journal-text fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-0 small">Leves</p>
+                    <h2 class="mb-0 fw-bold">{{ leves }}</h2>
+                </div>
+                <i class="bi bi-check-circle fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-dark bg-warning shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-0 small">Médias</p>
+                    <h2 class="mb-0 fw-bold">{{ medias }}</h2>
+                </div>
+                <i class="bi bi-exclamation-circle fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-0 small">Graves</p>
+                    <h2 class="mb-0 fw-bold">{{ graves }}</h2>
+                </div>
+                <i class="bi bi-x-circle fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+
+    {# Ocorrências recentes #}
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0"><i class="bi bi-clock-history"></i> Ocorrências Recentes</h6>
+            </div>
+            <div class="card-body p-0">
+                {% if recentes %}
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Turma</th>
+                            <th>Data</th>
+                            <th>Gravidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for oc in recentes %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'detalhe' oc.pk %}" class="text-decoration-none text-dark fw-bold">
+                                    {{ oc.nome_aluno }}
+                                </a>
+                            </td>
+                            <td class="small">{{ oc.get_curso_display }} {{ oc.get_ano_display }}</td>
+                            <td class="small">{{ oc.data|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if oc.gravidade == 'leve' %}
+                                    <span class="badge bg-success">🟢 Leve</span>
+                                {% elif oc.gravidade == 'media' %}
+                                    <span class="badge bg-warning text-dark">🟡 Média</span>
+                                {% else %}
+                                    <span class="badge bg-danger">🔴 Grave</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-1"></i>
+                    <p class="mt-2">Nenhuma ocorrência registrada ainda.</p>
+                </div>
+                {% endif %}
+            </div>
+            {% if total > 5 %}
+            <div class="card-footer text-end">
+                <a href="{% url 'listar' %}" class="btn btn-sm btn-outline-dark">
+                    Ver todas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Ocorrências por curso #}
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Por Curso</h6>
+            </div>
+            <div class="card-body">
+                {% for item in cursos_data %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>{{ item.curso }}</span>
+                        <span class="fw-bold">{{ item.quantidade }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        {% if total > 0 %}
+                            <div class="progress-bar bg-dark" style="width: {% widthratio item.quantidade total 100 %}%"></div>
+                        {% else %}
+                            <div class="progress-bar bg-dark" style="width: 0%"></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
