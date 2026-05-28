@@ -9,46 +9,43 @@
     >
   </div>
   <div class="card-body">
-    {# Filtros #}
-    <form method="GET" class="row g-2 mb-4">
-      <div class="col-md-4">
-        <input
-          type="text"
-          name="nome"
-          class="form-control"
-          placeholder="🔍 Buscar por nome..."
-          value="{{ request.GET.nome }}"
-        />
-      </div>
-      <div class="col-md-3">
-        <select name="curso" class="form-select">
-          <option value="">Todos os cursos</option>
-          {% for valor, label in cursos %}
-          <option value="{{ valor }}" {% if request.GET.curso="" ="valor" %}selected{% endif %}
-          >
-            {{ label }}
-          </option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-2">
-        <select name="ano" class="form-select">
-          <option value="">Todos os anos</option>
-          {% for valor, label in anos %}
-          <option value="{{ valor }}" {% if request.GET.ano="" ="valor" %}selected{% endif %}>
-            {{ label }}
-          </option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-dark w-100">Filtrar</button>
-      </div>
-      <div class="col-md-1">
-        <a href="{% url 'listar' %}" class="btn btn-outline-secondary w-100"
-          >✕</a
-        >
-      </div>
+        {# Filtros #}
+        <form method="GET" class="row g-2 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="nome" class="form-control"
+                   placeholder="🔍 Buscar por nome..."
+                   value="{{ request.GET.nome }}">
+        </div>
+      
+        <div class="col-md-3">
+            <select name="curso" class="form-select">
+                <option value="">Todos os cursos</option>
+                {% for valor, label in cursos %}
+                    <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+      
+        <div class="col-md-2">
+            <select name="ano" class="form-select">
+                <option value="">Todos os anos</option>
+                {% for valor, label in anos %}
+                    <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+      
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100">Filtrar</button>
+        </div>
+      
+        <div class="col-md-1">
+            <a href="{% url 'listar' %}" class="btn btn-outline-secondary w-100">✕</a>
+        </div>
     </form>
 
     {# Tabela #} {% if ocorrencias %}
