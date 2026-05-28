@@ -24,15 +24,7 @@
         <select name="curso" class="form-select">
           <option value="">Todos os cursos</option>
           {% for valor, label in cursos %}
-          <option
-            value="{{ valor }}"
-            {%
-            if
-            request.GET.curso=""
-            ="valor"
-            %}selected{%
-            endif
-            %}
+          <option value="{{ valor }}" {% if request.GET.curso="" ="valor" %}selected{% endif %}
           >
             {{ label }}
           </option>
@@ -43,16 +35,7 @@
         <select name="ano" class="form-select">
           <option value="">Todos os anos</option>
           {% for valor, label in anos %}
-          <option
-            value="{{ valor }}"
-            {%
-            if
-            request.GET.ano=""
-            ="valor"
-            %}selected{%
-            endif
-            %}
-          >
+          <option value="{{ valor }}" {% if request.GET.ano="" ="valor" %}selected{% endif %}>
             {{ label }}
           </option>
           {% endfor %}
