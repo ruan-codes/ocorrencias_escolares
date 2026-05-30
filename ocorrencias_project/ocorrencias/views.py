@@ -79,7 +79,9 @@ def listar(request):
 
 @login_required
 def cadastrar(request):
-    form = OcorrenciaForm(request.POST or None)
+    aluno_pk = request.GET.get("aluno")
+    initial = {"aluno": aluno_pk} if aluno_pk else {}
+    form = OcorrenciaForm(request.POST or None, initial=initial)
     if request.method == "POST" and form.is_valid():
         ocorrencia = form.save(commit=False)
         ocorrencia.registrado_por = request.user
