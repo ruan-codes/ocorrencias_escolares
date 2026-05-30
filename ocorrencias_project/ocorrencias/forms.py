@@ -43,7 +43,7 @@ class OcorrenciaForm(forms.ModelForm):
         model = Ocorrencia
         fields = ["aluno", "data", "descricao", "gravidade"]
         widgets = {
-            "aluno": forms.Select(attrs={"class": "form-select"}),
+            "aluno":     forms.Select(attrs={"class": "form-select"}),
             "gravidade": forms.Select(attrs={"class": "form-select"}),
             "data": forms.DateInput(attrs={
                 "class": "form-control",
@@ -61,3 +61,8 @@ class OcorrenciaForm(forms.ModelForm):
             "descricao": "Descrição",
             "gravidade": "Gravidade",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Exibe apenas alunos ativos no dropdown
+        self.fields["aluno"].queryset = Aluno.objects.filter(ativo=True).order_by("nome")
