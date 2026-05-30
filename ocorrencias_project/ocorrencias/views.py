@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Ocorrencia
 from .forms import OcorrenciaForm
+from django.contrib.auth.decorators import login_required
 
 def dashboard(request):
     total = Ocorrencia.objects.count()
@@ -27,7 +28,7 @@ def dashboard(request):
     return render(request, "ocorrencias/dashboard.html", context)
     
     
-
+@login_required
 def cadastrar(request):
     if request.method == "POST":
         form = OcorrenciaForm(request.POST)
@@ -70,6 +71,7 @@ def detalhe(request, pk):
     ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
     return render(request, "ocorrencias/detalhe.html", {"ocorrencia": ocorrencia})
 
+@login_required
 def editar(request, pk):
     ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
     if request.method == "POST":
@@ -83,6 +85,7 @@ def editar(request, pk):
     
     return render(request, "ocorrencias/editar.html", {"form": form, "ocorrencia": ocorrencia})
 
+@login_required
 def excluir(request, pk):
     ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
     if request.method == "POST":
