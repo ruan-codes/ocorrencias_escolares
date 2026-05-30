@@ -35,6 +35,6 @@ class OcorrenciaForm(forms.ModelForm):
 
     def clean_nome_aluno(self):
         nome = self.cleaned_data.get("nome_aluno", "")
-        if not nome or not nome.strip:
+        if not nome.strip():
             raise forms.ValidationError("O nome do aluno não pode estar em branco.")
         return nome.strip()      

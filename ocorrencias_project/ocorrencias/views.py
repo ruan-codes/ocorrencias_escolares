@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-# pyrefly: ignore [missing-import]
 from .models import Ocorrencia
-# pyrefly: ignore [missing-import]
 from .forms import OcorrenciaForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 
+@login_required
 def dashboard(request):
     stats = Ocorrencia.objects.aggregate(
         total = Count("id"),
@@ -53,6 +52,7 @@ def cadastrar(request):
 
     return render(request, "ocorrencias/cadastrar.html", {"form": form})
 
+@login_required
 def listar(request):
     ocorrencias = Ocorrencia.objects.all()
 
@@ -79,6 +79,7 @@ def listar(request):
 
     return render(request, "ocorrencias/listar.html", context)
 
+@login_required
 def detalhe(request, pk):
     ocorrencia = get_object_or_404(Ocorrencia, pk=pk)
     return render(request, "ocorrencias/detalhe.html", {"ocorrencia": ocorrencia})
