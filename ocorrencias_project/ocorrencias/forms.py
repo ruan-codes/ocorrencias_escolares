@@ -1,17 +1,49 @@
 from django import forms
-from .models import Ocorrencia
+from .models import Aluno, Ocorrencia
 
-class OcorrenciaForm(forms.ModelForm):
+
+class AlunoForm(forms.ModelForm):
     class Meta:
-        model = Ocorrencia
-        fields = ["nome_aluno", "curso", "ano", "data", "descricao", "gravidade"]
+        model = Aluno
+        fields = ["matricula", "nome", "curso", "ano"]
         widgets = {
-            "nome_aluno": forms.TextInput(attrs={
+            "matricula": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Ex: 2024001"
+            }),
+            "nome": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Nome completo do aluno"
             }),
             "curso": forms.Select(attrs={"class": "form-select"}),
-            "ano": forms.Select(attrs={"class": "form-select"}),
+            "ano":   forms.Select(attrs={"class": "form-select"}),
+        }
+        labels = {
+            "matricula": "Matrícula",
+            "nome":      "Nome do Aluno",
+            "curso":     "Curso",
+            "ano":       "Ano",
+        }
+
+    def clean_nome(self):
+        nome = self.cleaned_data.get("nome", "")
+        if not nome.strip():
+            raise forms.ValidationError("O nome do aluno não pode estar em branco.")
+        return nome.strip()
+
+    def clean_matricula(self):
+        matricula = self.cleaned_data.get("matricula", "").strip()
+        if not matricula:
+            raise forms.ValidationError("A matrícula não pode estar em branco.")
+        return matricula
+
+
+class OcorrenciaForm(forms.ModelForm):
+    class Meta:
+        model = Ocorrencia
+        fields = ["aluno", "data", "descricao", "gravidade"]
+        widgets = {
+            "aluno": forms.Select(attrs={"class": "form-select"}),
             "gravidade": forms.Select(attrs={"class": "form-select"}),
             "data": forms.DateInput(attrs={
                 "class": "form-control",
@@ -23,18 +55,9 @@ class OcorrenciaForm(forms.ModelForm):
                 "placeholder": "Descreva detalhadamente o ocorrido..."
             }),
         }
-
         labels = {
-            "nome_aluno": "Nome do Aluno",
-            "curso": "Curso",
-            "ano": "Ano",
-            "data": "Data da Ocorrência",
+            "aluno":     "Aluno",
+            "data":      "Data da Ocorrência",
             "descricao": "Descrição",
             "gravidade": "Gravidade",
         }
-
-    def clean_nome_aluno(self):
-        nome = self.cleaned_data.get("nome_aluno", "")
-        if not nome.strip():
-            raise forms.ValidationError("O nome do aluno não pode estar em branco.")
-        return nome.strip()      

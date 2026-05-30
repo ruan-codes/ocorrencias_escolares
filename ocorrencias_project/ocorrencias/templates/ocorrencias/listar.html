@@ -1,89 +1,99 @@
-{% extends 'ocorrencias/base.html' %} {% block content %}
+{% extends 'ocorrencias/base.html' %}
+{% block title %}Ocorrências — Ocorrências AFS{% endblock %}
+
+{% block content %}
 <div class="card shadow-sm">
-  <div
-    class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
-  >
-    <h5 class="mb-0"><i class="bi bi-list-ul"></i> Ocorrências Registradas</h5>
-    <span class="badge bg-warning text-dark"
-      >{{ ocorrencias.count }} registro(s)</span
-    >
+  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+    <h5 class="mb-0 fw-semibold">
+      <i class="bi bi-list-ul me-1"></i> Ocorrências Registradas
+    </h5>
+    <div class="d-flex gap-2 align-items-center">
+      <span class="badge bg-warning text-dark">{{ ocorrencias.count }} registro(s)</span>
+      <a href="{% url 'cadastrar' %}" class="btn btn-warning btn-sm fw-semibold">
+        <i class="bi bi-plus-circle"></i> Nova
+      </a>
+    </div>
   </div>
+
   <div class="card-body">
-        {# Filtros #}
-        <form method="GET" class="row g-2 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="nome" class="form-control"
-                   placeholder="🔍 Buscar por nome..."
-                   value="{{ request.GET.nome }}">
-        </div>
-      
-        <div class="col-md-3">
-            <select name="curso" class="form-select">
-                <option value="">Todos os cursos</option>
-                {% for valor, label in cursos %}
-                    <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-      
-        <div class="col-md-2">
-            <select name="ano" class="form-select">
-                <option value="">Todos os anos</option>
-                {% for valor, label in anos %}
-                    <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-      
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-dark w-100">Filtrar</button>
-        </div>
-      
-        <div class="col-md-1">
-            <a href="{% url 'listar' %}" class="btn btn-outline-secondary w-100">✕</a>
-        </div>
+    {# ── Filtros ── #}
+    <form method="GET" class="row g-2 mb-4">
+      <div class="col-md-3">
+        <input
+          type="text" name="nome" class="form-control form-control-sm"
+          placeholder="🔍 Buscar por aluno..."
+          value="{{ request.GET.nome }}"
+        />
+      </div>
+      <div class="col-md-3">
+        <select name="curso" class="form-select form-select-sm">
+          <option value="">Todos os cursos</option>
+          {% for valor, label in cursos %}
+            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="ano" class="form-select form-select-sm">
+          <option value="">Todos os anos</option>
+          {% for valor, label in anos %}
+            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="gravidade" class="form-select form-select-sm">
+          <option value="">Todas as gravidades</option>
+          {% for valor, label in gravidades %}
+            <option value="{{ valor }}" {% if request.GET.gravidade == valor %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-dark btn-sm w-100">Filtrar</button>
+      </div>
+      <div class="col-md-1">
+        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar filtros">✕</a>
+      </div>
     </form>
 
-    {# Tabela #} {% if ocorrencias %}
+    {# ── Tabela ── #}
+    {% if ocorrencias %}
     <div class="table-responsive">
       <table class="table table-hover align-middle">
         <thead class="table-dark">
           <tr>
-            <th>Aluno</th>
+            <th class="ps-3">Aluno</th>
             <th>Turma</th>
             <th>Data</th>
             <th>Gravidade</th>
             <th>Descrição</th>
+            <th>Registrado por</th>
           </tr>
         </thead>
         <tbody>
           {% for oc in ocorrencias %}
           <tr>
-            <td class="fw-bold">
-              <a
-                href="{% url 'detalhe' oc.pk %}"
-                class="text-decoration-none text-dark"
-              >
-                {{ oc.nome_aluno }}
+            <td class="ps-3 fw-semibold">
+              <a href="{% url 'detalhe' oc.pk %}" class="text-decoration-none text-dark">
+                {{ oc.aluno.nome }}
               </a>
+              <div class="text-muted small fw-normal">{{ oc.aluno.matricula }}</div>
             </td>
-            <td>{{ oc.get_curso_display }} {{ oc.get_ano_display }}</td>
-            <td>{{ oc.data|date:"d/m/Y" }}</td>
+            <td class="text-muted small">{{ oc.aluno.turma }}</td>
+            <td class="text-muted small text-nowrap">{{ oc.data|date:"d/m/Y" }}</td>
             <td>
-              {% if oc.gravidade == 'leve' %}
-              <span class="badge bg-success">🟢 Leve</span>
-              {% elif oc.gravidade == 'media' %}
-              <span class="badge bg-warning text-dark">🟡 Média</span>
-              {% else %}
-              <span class="badge bg-danger">🔴 Grave</span>
-              {% endif %}
+              {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=oc.gravidade %}
             </td>
+            <td class="text-muted small">{{ oc.descricao|truncatechars:55 }}</td>
             <td class="text-muted small">
-              {{ oc.descricao|truncatechars:60 }}
+              {{ oc.registrado_por.get_full_name|default:oc.registrado_por.username|default:"—" }}
             </td>
           </tr>
           {% endfor %}
@@ -92,8 +102,13 @@
     </div>
     {% else %}
     <div class="text-center text-muted py-5">
-      <i class="bi bi-inbox fs-1"></i>
-      <p class="mt-2">Nenhuma ocorrência encontrada.</p>
+      <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+      <p class="mb-0">Nenhuma ocorrência encontrada.</p>
+      {% if request.GET %}
+        <a href="{% url 'listar' %}" class="btn btn-sm btn-outline-secondary mt-3">
+          <i class="bi bi-x"></i> Limpar filtros
+        </a>
+      {% endif %}
     </div>
     {% endif %}
   </div>

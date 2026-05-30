@@ -1,0 +1,72 @@
+{% extends 'ocorrencias/base.html' %}
+{% block title %}Editar Aluno — {{ aluno.nome }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{% url 'listar_alunos' %}" class="text-decoration-none">Alunos</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'detalhe_aluno' aluno.pk %}" class="text-decoration-none">{{ aluno.nome }}</a></li>
+        <li class="breadcrumb-item active">Editar</li>
+      </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning text-dark py-3">
+        <h5 class="mb-0 fw-semibold">
+          <i class="bi bi-pencil me-1"></i> Editar Aluno
+          <span class="fw-normal opacity-75">— {{ aluno.nome }}</span>
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">{{ form.matricula.label }}</label>
+            {{ form.matricula }}
+            {% if form.matricula.errors %}
+              <div class="text-danger small mt-1">{{ form.matricula.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">{{ form.nome.label }}</label>
+            {{ form.nome }}
+            {% if form.nome.errors %}
+              <div class="text-danger small mt-1">{{ form.nome.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="row">
+            <div class="col-md-7 mb-3">
+              <label class="form-label fw-semibold small">{{ form.curso.label }}</label>
+              {{ form.curso }}
+              {% if form.curso.errors %}
+                <div class="text-danger small mt-1">{{ form.curso.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-5 mb-4">
+              <label class="form-label fw-semibold small">{{ form.ano.label }}</label>
+              {{ form.ano }}
+              {% if form.ano.errors %}
+                <div class="text-danger small mt-1">{{ form.ano.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning px-4 fw-semibold">
+              <i class="bi bi-save me-1"></i> Salvar Alterações
+            </button>
+            <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

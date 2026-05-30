@@ -1,0 +1,121 @@
+{% extends 'ocorrencias/base.html' %}
+{% block title %}Alunos — Ocorrências AFS{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+    <h5 class="mb-0 fw-semibold">
+      <i class="bi bi-people me-1"></i> Alunos Cadastrados
+    </h5>
+    <div class="d-flex gap-2 align-items-center">
+      <span class="badge bg-warning text-dark">{{ alunos.count }} aluno(s)</span>
+      <a href="{% url 'cadastrar_aluno' %}" class="btn btn-warning btn-sm fw-semibold">
+        <i class="bi bi-plus-circle"></i> Novo Aluno
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {# ── Filtros ── #}
+    <form method="GET" class="row g-2 mb-4">
+      <div class="col-md-4">
+        <input
+          type="text" name="nome" class="form-control form-control-sm"
+          placeholder="🔍 Buscar por nome..."
+          value="{{ request.GET.nome }}"
+        />
+      </div>
+      <div class="col-md-3">
+        <select name="curso" class="form-select form-select-sm">
+          <option value="">Todos os cursos</option>
+          {% for valor, label in cursos %}
+            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="ano" class="form-select form-select-sm">
+          <option value="">Todos os anos</option>
+          {% for valor, label in anos %}
+            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-dark btn-sm w-100">Filtrar</button>
+      </div>
+      <div class="col-md-1">
+        <a href="{% url 'listar_alunos' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar">✕</a>
+      </div>
+    </form>
+
+    {# ── Tabela ── #}
+    {% if alunos %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th class="ps-3">Matrícula</th>
+            <th>Nome</th>
+            <th>Turma</th>
+            <th class="text-center">Ocorrências</th>
+            <th class="text-end pe-3">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for aluno in alunos %}
+          <tr>
+            <td class="ps-3 text-muted small font-monospace">{{ aluno.matricula }}</td>
+            <td class="fw-semibold">
+              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="text-decoration-none text-dark">
+                {{ aluno.nome }}
+              </a>
+            </td>
+            <td class="text-muted small">{{ aluno.turma }}</td>
+            <td class="text-center">
+              {% if aluno.total_ocorrencias > 0 %}
+                <span class="badge {% if aluno.total_ocorrencias >= 5 %}bg-danger{% elif aluno.total_ocorrencias >= 3 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                  {{ aluno.total_ocorrencias }}
+                </span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+            <td class="text-end pe-3">
+              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn btn-sm btn-outline-dark" title="Ver histórico">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'editar_aluno' aluno.pk %}" class="btn btn-sm btn-outline-warning" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a href="{% url 'cadastrar' %}?aluno={{ aluno.pk }}" class="btn btn-sm btn-warning" title="Nova ocorrência">
+                <i class="bi bi-plus"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
+      <p class="mb-0">Nenhum aluno encontrado.</p>
+      {% if request.GET %}
+        <a href="{% url 'listar_alunos' %}" class="btn btn-sm btn-outline-secondary mt-3">
+          <i class="bi bi-x"></i> Limpar filtros
+        </a>
+      {% else %}
+        <a href="{% url 'cadastrar_aluno' %}" class="btn btn-sm btn-warning mt-3">
+          <i class="bi bi-plus-circle"></i> Cadastrar primeiro aluno
+        </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,50 +1,85 @@
 {% extends 'ocorrencias/base.html' %}
+{% block title %}Ocorrência — {{ ocorrencia.aluno.nome }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="bi bi-file-text"></i> Detalhe da Ocorrência</h5>
-                {% if ocorrencia.gravidade == 'leve' %}
-                    <span class="badge bg-success fs-6">🟢 Leve</span>
-                {% elif ocorrencia.gravidade == 'media' %}
-                    <span class="badge bg-warning text-dark fs-6">🟡 Média</span>
-                {% else %}
-                    <span class="badge bg-danger fs-6">🔴 Grave</span>
-                {% endif %}
+  <div class="col-md-8 col-lg-7">
+
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'listar' %}" class="text-decoration-none">Ocorrências</a></li>
+        <li class="breadcrumb-item active">Detalhe</li>
+      </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0 fw-semibold">
+          <i class="bi bi-file-text me-1"></i> Detalhe da Ocorrência
+        </h5>
+        {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=ocorrencia.gravidade %}
+      </div>
+
+      <div class="card-body p-4">
+
+        {# Bloco do aluno #}
+        <div class="bg-light rounded p-3 mb-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="mb-0 text-muted small fw-semibold text-uppercase tracking-wide">Aluno</p>
+              <h5 class="mb-0 fw-bold">{{ ocorrencia.aluno.nome }}</h5>
+              <p class="mb-0 text-muted small">
+                Matrícula {{ ocorrencia.aluno.matricula }} &bull; {{ ocorrencia.aluno.turma }}
+              </p>
             </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-3">Aluno</dt>
-                    <dd class="col-sm-9">{{ ocorrencia.nome_aluno }}</dd>
-
-                    <dt class="col-sm-3">Turma</dt>
-                    <dd class="col-sm-9">{{ ocorrencia.get_curso_display }} — {{ ocorrencia.get_ano_display }}</dd>
-
-                    <dt class="col-sm-3">Data</dt>
-                    <dd class="col-sm-9">{{ ocorrencia.data|date:"d/m/Y" }}</dd>
-
-                    <dt class="col-sm-3">Registrado em</dt>
-                    <dd class="col-sm-9">{{ ocorrencia.criado_em|date:"d/m/Y H:i" }}</dd>
-
-                    <dt class="col-sm-3">Descrição</dt>
-                    <dd class="col-sm-9">{{ ocorrencia.descricao }}</dd>
-                </dl>
-
-                <div class="d-flex gap-2 mt-3">
-                    <a href="{% url 'editar' ocorrencia.pk %}" class="btn btn-warning">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                    <a href="{% url 'excluir' ocorrencia.pk %}" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Excluir
-                    </a>
-                    <a href="{% url 'listar' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
+            <a href="{% url 'detalhe_aluno' ocorrencia.aluno.pk %}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-person"></i> Ver aluno
+            </a>
+          </div>
         </div>
+
+        <dl class="row mb-0">
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Data da Ocorrência</dt>
+          <dd class="col-sm-8">{{ ocorrencia.data|date:"d/m/Y" }}</dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Gravidade</dt>
+          <dd class="col-sm-8">
+            {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=ocorrencia.gravidade %}
+          </dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Descrição</dt>
+          <dd class="col-sm-8">{{ ocorrencia.descricao|linebreaksbr }}</dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Registrado por</dt>
+          <dd class="col-sm-8">
+            {{ ocorrencia.registrado_por.get_full_name|default:ocorrencia.registrado_por.username|default:"—" }}
+          </dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Registrado em</dt>
+          <dd class="col-sm-8 text-muted small">{{ ocorrencia.criado_em|date:"d/m/Y H:i" }}</dd>
+
+          {% if ocorrencia.atualizado_em != ocorrencia.criado_em %}
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Atualizado em</dt>
+          <dd class="col-sm-8 text-muted small">{{ ocorrencia.atualizado_em|date:"d/m/Y H:i" }}</dd>
+          {% endif %}
+        </dl>
+      </div>
+
+      <div class="card-footer bg-white d-flex gap-2 py-3">
+        <a href="{% url 'editar' ocorrencia.pk %}" class="btn btn-warning btn-sm fw-semibold">
+          <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'excluir' ocorrencia.pk %}" class="btn btn-danger btn-sm fw-semibold">
+          <i class="bi bi-trash"></i> Excluir
+        </a>
+        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm ms-auto">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+      </div>
     </div>
+
+  </div>
 </div>
 {% endblock %}
