@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from .models import Aluno, Ocorrencia
 from .forms import AlunoForm, OcorrenciaForm
@@ -33,11 +34,11 @@ def dashboard(request):
     ]
 
     context = {
-        "total":       stats["total"],
-        "leves":       stats["leves"],
-        "medias":      stats["medias"],
-        "graves":      stats["graves"],
-        "recentes":    Ocorrencia.objects.select_related("aluno").all()[:5],
+        "total": stats["total"],
+        "leves": stats["leves"],
+        "medias": stats["medias"],
+        "graves": stats["graves"],
+        "recentes": Ocorrencia.objects.select_related("aluno").all()[:5],
         "cursos_data": cursos_data,
         "total_alunos": Aluno.objects.filter(ativo=True).count(),
     }
@@ -68,19 +69,25 @@ def listar(request):
     if gravidade:
         ocorrencias = ocorrencias.filter(gravidade=gravidade)
 
+    paginator = Paginator(ocorrencias, 20)
+    page = paginator.get_page(request.GET.get("page"))
+
     context = {
-        "ocorrencias": ocorrencias,
-        "cursos":      Aluno.Curso.choices,
+        "ocorrencias": page,
+        "page_obj": page,
+        "cursos": Aluno.Curso.choices,
         "anos": [(str(v), l) for v, l in Aluno.ANOS],
-        "gravidades":  Ocorrencia.Gravidade.choices,
+        "gravidades": Ocorrencia.Gravidade.choices,
     }
     return render(request, "ocorrencias/listar.html", context)
 
 
 @login_required
 def cadastrar(request):
+    # Pré-seleciona o aluno quando vindo do botão "Nova Ocorrência" na lista de alunos
     aluno_pk = request.GET.get("aluno")
     initial = {"aluno": aluno_pk} if aluno_pk else {}
+
     form = OcorrenciaForm(request.POST or None, initial=initial)
     if request.method == "POST" and form.is_valid():
         ocorrencia = form.save(commit=False)
@@ -145,8 +152,12 @@ def listar_alunos(request):
     if ano:
         alunos = alunos.filter(ano=ano)
 
+    paginator = Paginator(alunos, 20)
+    page = paginator.get_page(request.GET.get("page"))
+
     context = {
-        "alunos": alunos,
+        "alunos": page,
+        "page_obj": page,
         "cursos": Aluno.Curso.choices,
         "anos": [(str(v), l) for v, l in Aluno.ANOS],
     }
@@ -176,9 +187,9 @@ def detalhe_aluno(request, pk):
     )
 
     context = {
-        "aluno":      aluno,
+        "aluno": aluno,
         "ocorrencias": ocorrencias,
-        "stats":      stats,
+        "stats": stats,
     }
     return render(request, "ocorrencias/detalhe_aluno.html", context)
 
@@ -192,6 +203,6 @@ def editar_aluno(request, pk):
         messages.success(request, "Dados do aluno atualizados com sucesso!")
         return redirect("detalhe_aluno", pk=pk)
     return render(request, "ocorrencias/editar_aluno.html", {
-        "form":  form,
+        "form": form,
         "aluno": aluno,
     })

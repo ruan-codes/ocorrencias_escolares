@@ -8,7 +8,7 @@
       <i class="bi bi-people me-1"></i> Alunos Cadastrados
     </h5>
     <div class="d-flex gap-2 align-items-center">
-      <span class="badge bg-warning text-dark">{{ alunos.count }} aluno(s)</span>
+      <span class="badge bg-warning text-dark">{{ page_obj.paginator.count }} aluno(s)</span>
       <a href="{% url 'cadastrar_aluno' %}" class="btn btn-warning btn-sm fw-semibold">
         <i class="bi bi-plus-circle"></i> Novo Aluno
       </a>
@@ -101,6 +101,9 @@
         </tbody>
       </table>
     </div>
+
+    {% include "ocorrencias/partials/paginacao.html" %}
+
     {% else %}
     <div class="text-center text-muted py-5">
       <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>

@@ -8,7 +8,7 @@
       <i class="bi bi-list-ul me-1"></i> Ocorrências Registradas
     </h5>
     <div class="d-flex gap-2 align-items-center">
-      <span class="badge bg-warning text-dark">{{ ocorrencias.count }} registro(s)</span>
+      <span class="badge bg-warning text-dark">{{ page_obj.paginator.count }} registro(s)</span>
       <a href="{% url 'cadastrar' %}" class="btn btn-warning btn-sm fw-semibold">
         <i class="bi bi-plus-circle"></i> Nova
       </a>
@@ -100,6 +100,9 @@
         </tbody>
       </table>
     </div>
+
+    {% include "ocorrencias/partials/paginacao.html" %}
+
     {% else %}
     <div class="text-center text-muted py-5">
       <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
