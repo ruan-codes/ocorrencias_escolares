@@ -1,27 +1,39 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+# pyrefly: ignore [missing-import]
 from .models import Ocorrencia
+# pyrefly: ignore [missing-import]
 from .forms import OcorrenciaForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 
 def dashboard(request):
-    total = Ocorrencia.objects.count()
-    leves = Ocorrencia.objects.filter(gravidade="leve").count()
-    medias = Ocorrencia.objects.filter(gravidade="media").count()
-    graves = Ocorrencia.objects.filter(gravidade="grave").count()
-    recentes = Ocorrencia.objects.all()[:5]
+    stats = Ocorrencia.objects.aggregate(
+        total = Count("id"),
+        leves = Count("id", filter=Q(gravidade="leve")),
+        medias = Count("id", filter=Q(gravidade="media")),
+        graves = Count("id", filter=Q(gravidade="grave")),
+    )
+
+    cursos_qs = (
+        Ocorrencia.objects
+        .values("curso")
+        .annotate(quantidade=Count("id"))
+        .order_by("-quantidade")
+    )
+    cursos_dict = {item["curso"]: item["quantidade"] for item in cursos_qs}
     
-    cursos_data = []
-    for valor, label in Ocorrencia.CURSOS:
-        quantidade = Ocorrencia.objects.filter(curso=valor).count()
-        cursos_data.append({"curso": label, "quantidade": quantidade})
-        
+    cursos_data = [
+        {"curso": label, "quantidade": cursos_dict.get(valor, 0)}
+        for valor, label in Ocorrencia.CURSOS
+    ]
+
     context = {
-        "total": total,
-        "leves": leves,
-        "medias": medias,
-        "graves": graves,
-        "recentes": recentes,
+        "total": stats["total"],
+        "leves": stats["leves"],
+        "medias": stats["medias"],
+        "graves": stats["graves"],
+        "recentes": Ocorrencia.objects.all()[:5],
         "cursos_data": cursos_data,
     }
     
