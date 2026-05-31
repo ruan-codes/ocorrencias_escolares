@@ -2,72 +2,70 @@
 {% block title %}Ocorrências — Ocorrências AFS{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-    <h5 class="mb-0 fw-semibold">
-      <i class="bi bi-list-ul me-1"></i> Ocorrências Registradas
-    </h5>
-    <div class="d-flex gap-2 align-items-center">
-      <span class="badge bg-warning text-dark">{{ page_obj.paginator.count }} registro(s)</span>
-      <a href="{% url 'cadastrar' %}" class="btn btn-warning btn-sm fw-semibold">
-        <i class="bi bi-plus-circle"></i> Nova
-      </a>
-    </div>
+<header class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-end mb-4">
+  <div>
+    <p class="page-kicker">Registros</p>
+    <h1 class="page-title">Ocorrências registradas</h1>
+    <p class="page-description">Consulte, filtre e acompanhe os registros disciplinares com foco em rastreabilidade e leitura rápida.</p>
   </div>
+  <div class="d-flex gap-2 align-items-center">
+    <span class="badge badge-soft-warning">{{ page_obj.paginator.count }} registro(s)</span>
+    <a href="{% url 'cadastrar' %}" class="btn btn-warning fw-semibold">
+      <i class="bi bi-plus-circle me-1"></i>Nova
+    </a>
+  </div>
+</header>
 
+<section class="card">
   <div class="card-body">
-    {# ── Filtros ── #}
-    <form method="GET" class="row g-2 mb-4">
+    <form method="GET" class="filter-bar row g-2 mb-4" aria-label="Filtros de ocorrências">
       <div class="col-md-3">
-        <input
-          type="text" name="nome" class="form-control form-control-sm"
-          placeholder="🔍 Buscar por aluno..."
-          value="{{ request.GET.nome }}"
-        />
+        <label class="visually-hidden" for="filtro-nome">Buscar por aluno</label>
+        <input id="filtro-nome" type="text" name="nome" class="form-control form-control-sm" placeholder="Buscar por aluno" value="{{ request.GET.nome }}" />
       </div>
       <div class="col-md-3">
-        <select name="curso" class="form-select form-select-sm">
+        <label class="visually-hidden" for="filtro-curso">Curso</label>
+        <select id="filtro-curso" name="curso" class="form-select form-select-sm">
           <option value="">Todos os cursos</option>
           {% for valor, label in cursos %}
-            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
-              {{ label }}
-            </option>
+            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
-        <select name="ano" class="form-select form-select-sm">
+        <label class="visually-hidden" for="filtro-ano">Ano</label>
+        <select id="filtro-ano" name="ano" class="form-select form-select-sm">
           <option value="">Todos os anos</option>
           {% for valor, label in anos %}
-            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
-              {{ label }}
-            </option>
+            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
-        <select name="gravidade" class="form-select form-select-sm">
+        <label class="visually-hidden" for="filtro-gravidade">Gravidade</label>
+        <select id="filtro-gravidade" name="gravidade" class="form-select form-select-sm">
           <option value="">Todas as gravidades</option>
           {% for valor, label in gravidades %}
-            <option value="{{ valor }}" {% if request.GET.gravidade == valor %}selected{% endif %}>
-              {{ label }}
-            </option>
+            <option value="{{ valor }}" {% if request.GET.gravidade == valor %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-1">
-        <button type="submit" class="btn btn-dark btn-sm w-100">Filtrar</button>
+        <button type="submit" class="btn btn-primary btn-sm w-100">
+          <i class="bi bi-funnel me-1"></i>Filtrar
+        </button>
       </div>
       <div class="col-md-1">
-        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar filtros">✕</a>
+        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar filtros" aria-label="Limpar filtros">
+          <i class="bi bi-x-lg"></i>
+        </a>
       </div>
     </form>
 
-    {# ── Tabela ── #}
     {% if ocorrencias %}
     <div class="table-responsive">
       <table class="table table-hover align-middle">
-        <thead class="table-dark">
+        <thead>
           <tr>
             <th class="ps-3">Aluno</th>
             <th>Turma</th>
@@ -81,20 +79,14 @@
           {% for oc in ocorrencias %}
           <tr>
             <td class="ps-3 fw-semibold">
-              <a href="{% url 'detalhe' oc.pk %}" class="text-decoration-none text-dark">
-                {{ oc.aluno.nome }}
-              </a>
+              <a href="{% url 'detalhe' oc.pk %}" class="text-decoration-none">{{ oc.aluno.nome }}</a>
               <div class="text-muted small fw-normal">{{ oc.aluno.matricula }}</div>
             </td>
             <td class="text-muted small">{{ oc.aluno.turma }}</td>
             <td class="text-muted small text-nowrap">{{ oc.data|date:"d/m/Y" }}</td>
-            <td>
-              {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=oc.gravidade %}
-            </td>
+            <td>{% include "ocorrencias/partials/gravidade_badge.html" with gravidade=oc.gravidade %}</td>
             <td class="text-muted small">{{ oc.descricao|truncatechars:55 }}</td>
-            <td class="text-muted small">
-              {{ oc.registrado_por.get_full_name|default:oc.registrado_por.username|default:"—" }}
-            </td>
+            <td class="text-muted small">{{ oc.registrado_por.get_full_name|default:oc.registrado_por.username|default:"—" }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -104,8 +96,8 @@
     {% include "ocorrencias/partials/paginacao.html" %}
 
     {% else %}
-    <div class="text-center text-muted py-5">
-      <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+    <div class="empty-state">
+      <i class="bi bi-inbox"></i>
       <p class="mb-0">Nenhuma ocorrência encontrada.</p>
       {% if request.GET %}
         <a href="{% url 'listar' %}" class="btn btn-sm btn-outline-secondary mt-3">
@@ -115,5 +107,5 @@
     </div>
     {% endif %}
   </div>
-</div>
+</section>
 {% endblock %}

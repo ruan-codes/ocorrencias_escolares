@@ -3,9 +3,7 @@
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-8 col-lg-7">
-
-    {# Breadcrumb #}
+  <div class="col-md-9 col-lg-7">
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb small">
         <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
@@ -14,48 +12,43 @@
       </ol>
     </nav>
 
-    <div class="card shadow-sm">
-      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0 fw-semibold">
-          <i class="bi bi-file-text me-1"></i> Detalhe da Ocorrência
-        </h5>
+    <section class="card">
+      <div class="card-header d-flex justify-content-between align-items-center gap-2 py-3">
+        <div>
+          <p class="page-kicker mb-1">Registro escolar</p>
+          <h1 class="h4 mb-0 fw-bold"><i class="bi bi-file-text me-1 text-success"></i>Detalhe da ocorrência</h1>
+        </div>
         {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=ocorrencia.gravidade %}
       </div>
 
       <div class="card-body p-4">
-
-        {# Bloco do aluno #}
-        <div class="bg-light rounded p-3 mb-4">
-          <div class="d-flex justify-content-between align-items-start">
+        <div class="detail-block p-3 mb-4">
+          <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 align-items-sm-start">
             <div>
-              <p class="mb-0 text-muted small fw-semibold text-uppercase tracking-wide">Aluno</p>
-              <h5 class="mb-0 fw-bold">{{ ocorrencia.aluno.nome }}</h5>
+              <p class="mb-0 text-muted small fw-semibold text-uppercase">Aluno</p>
+              <h2 class="h5 mb-0 fw-bold">{{ ocorrencia.aluno.nome }}</h2>
               <p class="mb-0 text-muted small">
-                Matrícula {{ ocorrencia.aluno.matricula }} &bull; {{ ocorrencia.aluno.turma }}
+                Matrícula {{ ocorrencia.aluno.matricula }} · {{ ocorrencia.aluno.turma }}
               </p>
             </div>
             <a href="{% url 'detalhe_aluno' ocorrencia.aluno.pk %}" class="btn btn-sm btn-outline-secondary">
-              <i class="bi bi-person"></i> Ver aluno
+              <i class="bi bi-person me-1"></i>Ver aluno
             </a>
           </div>
         </div>
 
         <dl class="row mb-0">
-          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Data da Ocorrência</dt>
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Data da ocorrência</dt>
           <dd class="col-sm-8">{{ ocorrencia.data|date:"d/m/Y" }}</dd>
 
           <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Gravidade</dt>
-          <dd class="col-sm-8">
-            {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=ocorrencia.gravidade %}
-          </dd>
+          <dd class="col-sm-8">{% include "ocorrencias/partials/gravidade_badge.html" with gravidade=ocorrencia.gravidade %}</dd>
 
           <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Descrição</dt>
           <dd class="col-sm-8">{{ ocorrencia.descricao|linebreaksbr }}</dd>
 
           <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Registrado por</dt>
-          <dd class="col-sm-8">
-            {{ ocorrencia.registrado_por.get_full_name|default:ocorrencia.registrado_por.username|default:"—" }}
-          </dd>
+          <dd class="col-sm-8">{{ ocorrencia.registrado_por.get_full_name|default:ocorrencia.registrado_por.username|default:"—" }}</dd>
 
           <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Registrado em</dt>
           <dd class="col-sm-8 text-muted small">{{ ocorrencia.criado_em|date:"d/m/Y H:i" }}</dd>
@@ -67,19 +60,18 @@
         </dl>
       </div>
 
-      <div class="card-footer bg-white d-flex gap-2 py-3">
+      <div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
         <a href="{% url 'editar' ocorrencia.pk %}" class="btn btn-warning btn-sm fw-semibold">
-          <i class="bi bi-pencil"></i> Editar
+          <i class="bi bi-pencil me-1"></i>Editar
         </a>
         <a href="{% url 'excluir' ocorrencia.pk %}" class="btn btn-danger btn-sm fw-semibold">
-          <i class="bi bi-trash"></i> Excluir
+          <i class="bi bi-trash me-1"></i>Excluir
         </a>
-        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm ms-auto">
-          <i class="bi bi-arrow-left"></i> Voltar
+        <a href="{% url 'listar' %}" class="btn btn-outline-secondary btn-sm ms-sm-auto">
+          <i class="bi bi-arrow-left me-1"></i>Voltar
         </a>
       </div>
-    </div>
-
+    </section>
   </div>
 </div>
 {% endblock %}

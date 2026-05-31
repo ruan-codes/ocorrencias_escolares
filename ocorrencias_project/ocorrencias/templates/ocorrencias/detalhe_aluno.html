@@ -2,101 +2,95 @@
 {% block title %}{{ aluno.nome }} — Ocorrências AFS{% endblock %}
 
 {% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'listar_alunos' %}" class="text-decoration-none">Alunos</a></li>
+    <li class="breadcrumb-item active">{{ aluno.nome }}</li>
+  </ol>
+</nav>
 
-  <nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb small">
-      <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'listar_alunos' %}" class="text-decoration-none">Alunos</a></li>
-      <li class="breadcrumb-item active">{{ aluno.nome }}</li>
-    </ol>
-  </nav>
-
-  <div class="row g-3 mb-3">
-
-    {# ── Card do aluno ── #}
-    <div class="col-lg-8">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-          <h5 class="mb-0 fw-semibold">
-            <i class="bi bi-person-badge me-1"></i> Dados do Aluno
-          </h5>
-          <a href="{% url 'editar_aluno' aluno.pk %}" class="btn btn-warning btn-sm fw-semibold">
-            <i class="bi bi-pencil"></i> Editar
-          </a>
+<div class="row g-3 mb-3">
+  <div class="col-lg-8">
+    <section class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center gap-2 py-3">
+        <div>
+          <p class="page-kicker mb-1">Perfil do aluno</p>
+          <h1 class="h4 mb-0 fw-bold"><i class="bi bi-person-badge me-1 text-success"></i>Dados do aluno</h1>
         </div>
-        <div class="card-body p-4">
-          <dl class="row mb-0">
-            <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Nome</dt>
-            <dd class="col-sm-8 fw-semibold fs-5">{{ aluno.nome }}</dd>
-
-            <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Matrícula</dt>
-            <dd class="col-sm-8 font-monospace">{{ aluno.matricula }}</dd>
-
-            <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Curso</dt>
-            <dd class="col-sm-8">{{ aluno.get_curso_display }}</dd>
-
-            <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Ano</dt>
-            <dd class="col-sm-8">{{ aluno.get_ano_display }}</dd>
-          </dl>
-        </div>
+        <a href="{% url 'editar_aluno' aluno.pk %}" class="btn btn-warning btn-sm fw-semibold">
+          <i class="bi bi-pencil me-1"></i>Editar
+        </a>
       </div>
-    </div>
+      <div class="card-body p-4">
+        <dl class="row mb-0">
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Nome</dt>
+          <dd class="col-sm-8 fw-semibold fs-5">{{ aluno.nome }}</dd>
 
-    {# ── Cards de stats ── #}
-    <div class="col-lg-4">
-      <div class="row g-3 h-100">
-        <div class="col-6 col-lg-12">
-          <div class="card shadow-sm bg-dark text-white h-100">
-            <div class="card-body d-flex justify-content-between align-items-center py-3">
-              <div>
-                <p class="mb-0 small opacity-75">Total</p>
-                <h3 class="mb-0 fw-bold">{{ stats.total }}</h3>
-              </div>
-              <i class="bi bi-journal-text fs-2 opacity-25"></i>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-lg-12">
-          <div class="row g-2">
-            <div class="col-4">
-              <div class="card shadow-sm bg-success text-white text-center py-2">
-                <div class="fw-bold fs-4">{{ stats.leves }}</div>
-                <div class="small opacity-75">Leves</div>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="card shadow-sm bg-warning text-dark text-center py-2">
-                <div class="fw-bold fs-4">{{ stats.medias }}</div>
-                <div class="small opacity-75">Médias</div>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="card shadow-sm bg-danger text-white text-center py-2">
-                <div class="fw-bold fs-4">{{ stats.graves }}</div>
-                <div class="small opacity-75">Graves</div>
-              </div>
-            </div>
-          </div>
-        </div>
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Matrícula</dt>
+          <dd class="col-sm-8 font-monospace">{{ aluno.matricula }}</dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Curso</dt>
+          <dd class="col-sm-8">{{ aluno.get_curso_display }}</dd>
+
+          <dt class="col-sm-4 text-muted small fw-semibold text-uppercase">Ano</dt>
+          <dd class="col-sm-8">{{ aluno.get_ano_display }}</dd>
+        </dl>
       </div>
-    </div>
-
+    </section>
   </div>
 
-  {# ── Histórico de ocorrências ── #}
-  <div class="card shadow-sm">
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-      <h6 class="mb-0 fw-semibold">
-        <i class="bi bi-clock-history me-1"></i> Histórico de Ocorrências
-      </h6>
-      <a href="{% url 'cadastrar' %}?aluno={{ aluno.pk }}" class="btn btn-warning btn-sm fw-semibold">
-        <i class="bi bi-plus"></i> Nova Ocorrência
-      </a>
+  <div class="col-lg-4">
+    <div class="row g-3 h-100">
+      <div class="col-6 col-lg-12">
+        <section class="metric-card p-3" style="--metric-color:#0e8a43;--metric-bg:#e8f6ee;">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="metric-label">Total</p>
+              <div class="metric-value">{{ stats.total }}</div>
+            </div>
+            <span class="metric-icon"><i class="bi bi-journal-text"></i></span>
+          </div>
+        </section>
+      </div>
+      <div class="col-6 col-lg-12">
+        <div class="row g-2">
+          <div class="col-4">
+            <section class="metric-card text-center p-2" style="--metric-color:#0b6b35;">
+              <div class="fw-bold fs-4">{{ stats.leves }}</div>
+              <div class="small text-muted">Leves</div>
+            </section>
+          </div>
+          <div class="col-4">
+            <section class="metric-card text-center p-2" style="--metric-color:#b45309;">
+              <div class="fw-bold fs-4">{{ stats.medias }}</div>
+              <div class="small text-muted">Médias</div>
+            </section>
+          </div>
+          <div class="col-4">
+            <section class="metric-card text-center p-2" style="--metric-color:#dc2626;">
+              <div class="fw-bold fs-4">{{ stats.graves }}</div>
+              <div class="small text-muted">Graves</div>
+            </section>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card-body p-0">
-      {% if ocorrencias %}
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
+  </div>
+</div>
+
+<section class="card">
+  <div class="card-header d-flex justify-content-between align-items-center gap-2 py-3">
+    <h2 class="h6 mb-0 fw-bold"><i class="bi bi-clock-history me-1 text-success"></i>Histórico de ocorrências</h2>
+    <a href="{% url 'cadastrar' %}?aluno={{ aluno.pk }}" class="btn btn-warning btn-sm fw-semibold">
+      <i class="bi bi-plus me-1"></i>Nova ocorrência
+    </a>
+  </div>
+  <div class="card-body p-0">
+    {% if ocorrencias %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
           <tr>
             <th class="ps-3">Data</th>
             <th>Gravidade</th>
@@ -109,18 +103,14 @@
           {% for oc in ocorrencias %}
           <tr>
             <td class="ps-3 text-nowrap small">{{ oc.data|date:"d/m/Y" }}</td>
-            <td>
-              {% include "ocorrencias/partials/gravidade_badge.html" with gravidade=oc.gravidade %}
-            </td>
+            <td>{% include "ocorrencias/partials/gravidade_badge.html" with gravidade=oc.gravidade %}</td>
             <td class="text-muted small">{{ oc.descricao|truncatechars:60 }}</td>
-            <td class="text-muted small">
-              {{ oc.registrado_por.get_full_name|default:oc.registrado_por.username|default:"—" }}
-            </td>
+            <td class="text-muted small">{{ oc.registrado_por.get_full_name|default:oc.registrado_por.username|default:"—" }}</td>
             <td class="text-end pe-3">
-              <a href="{% url 'detalhe' oc.pk %}" class="btn btn-sm btn-outline-dark" title="Ver">
+              <a href="{% url 'detalhe' oc.pk %}" class="btn btn-sm btn-outline-secondary" title="Ver" aria-label="Ver ocorrência">
                 <i class="bi bi-eye"></i>
               </a>
-              <a href="{% url 'editar' oc.pk %}" class="btn btn-sm btn-outline-warning" title="Editar">
+              <a href="{% url 'editar' oc.pk %}" class="btn btn-sm btn-outline-secondary" title="Editar" aria-label="Editar ocorrência">
                 <i class="bi bi-pencil"></i>
               </a>
             </td>
@@ -128,18 +118,17 @@
           {% endfor %}
         </tbody>
       </table>
-
-      <div class="px-3 pb-3">
-        {% include "ocorrencias/partials/paginacao.html" %}
-      </div>
-
-      {% else %}
-      <div class="text-center text-muted py-5">
-        <i class="bi bi-check-circle fs-1 d-block mb-2 opacity-25"></i>
-        <p class="mb-0">Nenhuma ocorrência registrada para este aluno.</p>
-      </div>
-      {% endif %}
     </div>
-  </div>
 
+    <div class="px-3 pb-3">
+      {% include "ocorrencias/partials/paginacao.html" %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-check-circle"></i>
+      <p class="mb-0">Nenhuma ocorrência registrada para este aluno.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

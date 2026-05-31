@@ -2,30 +2,35 @@ from django.contrib import admin
 from .models import Aluno, Ocorrencia
 
 
+admin.site.site_header = "Administração AFS"
+admin.site.site_title = "Ocorrências AFS"
+admin.site.index_title = "Painel administrativo"
+
+
 @admin.register(Aluno)
 class AlunoAdmin(admin.ModelAdmin):
-    list_display  = ["matricula", "nome", "curso", "ano", "ativo"]
-    list_filter   = ["curso", "ano", "ativo"]
+    list_display = ["matricula", "nome", "curso", "ano", "ativo"]
+    list_filter = ["curso", "ano", "ativo"]
     search_fields = ["matricula", "nome"]
-    ordering      = ["nome"]
+    ordering = ["nome"]
     list_editable = ["ativo"]
 
 
 @admin.register(Ocorrencia)
 class OcorrenciaAdmin(admin.ModelAdmin):
-    list_display  = ["aluno", "curso_aluno", "ano_aluno", "gravidade", "data", "registrado_por", "criado_em"]
-    list_filter   = ["gravidade", "aluno__curso", "aluno__ano"]
+    list_display = ["aluno", "curso_aluno", "ano_aluno", "gravidade", "data", "registrado_por", "criado_em"]
+    list_filter = ["gravidade", "aluno__curso", "aluno__ano"]
     search_fields = ["aluno__nome", "aluno__matricula", "descricao"]
-    ordering      = ["-criado_em"]
+    ordering = ["-criado_em"]
     readonly_fields = ["registrado_por", "criado_em", "atualizado_em"]
-    autocomplete_fields = ["aluno"]  # busca por nome/matrícula no campo aluno
+    autocomplete_fields = ["aluno"]
 
     fieldsets = (
         ("Aluno", {
-            "fields": ("aluno",)
+            "fields": ("aluno",),
         }),
         ("Ocorrência", {
-            "fields": ("data", "gravidade", "descricao")
+            "fields": ("data", "gravidade", "descricao"),
         }),
         ("Metadados", {
             "fields": ("registrado_por", "criado_em", "atualizado_em"),
@@ -42,7 +47,6 @@ class OcorrenciaAdmin(admin.ModelAdmin):
         return obj.aluno.get_ano_display()
 
     def save_model(self, request, obj, form, change):
-        # Garante que o admin também preenche registrado_por
         if not obj.pk:
             obj.registrado_por = request.user
         super().save_model(request, obj, form, change)

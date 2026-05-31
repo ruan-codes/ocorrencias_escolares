@@ -1,11 +1,9 @@
 {% extends 'ocorrencias/base.html' %}
-{% block title %}Editar Ocorrência — {{ ocorrencia.aluno.nome }}{% endblock %}
+{% block title %}Editar ocorrência — {{ ocorrencia.aluno.nome }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-8 col-lg-7">
-
-    {# Breadcrumb #}
+  <div class="col-md-9 col-lg-7">
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb small">
         <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
@@ -15,60 +13,52 @@
       </ol>
     </nav>
 
-    <div class="card shadow-sm">
-      <div class="card-header bg-warning text-dark py-3">
-        <h5 class="mb-0 fw-semibold">
-          <i class="bi bi-pencil me-1"></i> Editar Ocorrência
-          <span class="fw-normal opacity-75">— {{ ocorrencia.aluno.nome }}</span>
-        </h5>
+    <section class="card">
+      <div class="card-header py-3">
+        <p class="page-kicker mb-1">Edição</p>
+        <h1 class="h4 mb-0 fw-bold">
+          <i class="bi bi-pencil me-1 text-success"></i>Editar ocorrência
+          <span class="fw-normal text-muted">— {{ ocorrencia.aluno.nome }}</span>
+        </h1>
       </div>
       <div class="card-body p-4">
         <form method="POST" novalidate>
           {% csrf_token %}
 
           <div class="mb-3">
-            <label class="form-label fw-semibold small">{{ form.aluno.label }}</label>
+            <label class="form-label small" for="{{ form.aluno.id_for_label }}">{{ form.aluno.label }}</label>
             {{ form.aluno }}
-            {% if form.aluno.errors %}
-              <div class="text-danger small mt-1">{{ form.aluno.errors }}</div>
-            {% endif %}
+            {% if form.aluno.errors %}<div class="text-danger small mt-1">{{ form.aluno.errors }}</div>{% endif %}
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold small">{{ form.data.label }}</label>
+              <label class="form-label small" for="{{ form.data.id_for_label }}">{{ form.data.label }}</label>
               {{ form.data }}
-              {% if form.data.errors %}
-                <div class="text-danger small mt-1">{{ form.data.errors }}</div>
-              {% endif %}
+              {% if form.data.errors %}<div class="text-danger small mt-1">{{ form.data.errors }}</div>{% endif %}
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label fw-semibold small">{{ form.gravidade.label }}</label>
+              <label class="form-label small" for="{{ form.gravidade.id_for_label }}">{{ form.gravidade.label }}</label>
               {{ form.gravidade }}
-              {% if form.gravidade.errors %}
-                <div class="text-danger small mt-1">{{ form.gravidade.errors }}</div>
-              {% endif %}
+              {% if form.gravidade.errors %}<div class="text-danger small mt-1">{{ form.gravidade.errors }}</div>{% endif %}
             </div>
           </div>
 
           <div class="mb-4">
-            <label class="form-label fw-semibold small">{{ form.descricao.label }}</label>
+            <label class="form-label small" for="{{ form.descricao.id_for_label }}">{{ form.descricao.label }}</label>
             {{ form.descricao }}
-            {% if form.descricao.errors %}
-              <div class="text-danger small mt-1">{{ form.descricao.errors }}</div>
-            {% endif %}
+            {% if form.descricao.errors %}<div class="text-danger small mt-1">{{ form.descricao.errors }}</div>{% endif %}
           </div>
 
-          <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-warning px-4 fw-semibold">
-              <i class="bi bi-save me-1"></i> Salvar Alterações
+          <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-save me-1"></i>Salvar alterações
             </button>
             <a href="{% url 'detalhe' ocorrencia.pk %}" class="btn btn-outline-secondary">Cancelar</a>
           </div>
         </form>
       </div>
-    </div>
-
+    </section>
   </div>
 </div>
 {% endblock %}

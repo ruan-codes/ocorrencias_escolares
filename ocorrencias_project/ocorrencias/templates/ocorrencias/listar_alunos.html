@@ -2,62 +2,61 @@
 {% block title %}Alunos — Ocorrências AFS{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-    <h5 class="mb-0 fw-semibold">
-      <i class="bi bi-people me-1"></i> Alunos Cadastrados
-    </h5>
-    <div class="d-flex gap-2 align-items-center">
-      <span class="badge bg-warning text-dark">{{ page_obj.paginator.count }} aluno(s)</span>
-      <a href="{% url 'cadastrar_aluno' %}" class="btn btn-warning btn-sm fw-semibold">
-        <i class="bi bi-plus-circle"></i> Novo Aluno
-      </a>
-    </div>
+<header class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-end mb-4">
+  <div>
+    <p class="page-kicker">Cadastro escolar</p>
+    <h1 class="page-title">Alunos cadastrados</h1>
+    <p class="page-description">Encontre alunos ativos, consulte histórico e registre novas ocorrências com poucos cliques.</p>
   </div>
+  <div class="d-flex gap-2 align-items-center">
+    <span class="badge badge-soft-warning">{{ page_obj.paginator.count }} aluno(s)</span>
+    <a href="{% url 'cadastrar_aluno' %}" class="btn btn-warning fw-semibold">
+      <i class="bi bi-person-plus me-1"></i>Novo aluno
+    </a>
+  </div>
+</header>
 
+<section class="card">
   <div class="card-body">
-    {# ── Filtros ── #}
-    <form method="GET" class="row g-2 mb-4">
+    <form method="GET" class="filter-bar row g-2 mb-4" aria-label="Filtros de alunos">
       <div class="col-md-4">
-        <input
-          type="text" name="nome" class="form-control form-control-sm"
-          placeholder="🔍 Buscar por nome..."
-          value="{{ request.GET.nome }}"
-        />
+        <label class="visually-hidden" for="filtro-nome">Buscar por nome</label>
+        <input id="filtro-nome" type="text" name="nome" class="form-control form-control-sm" placeholder="Buscar por nome" value="{{ request.GET.nome }}" />
       </div>
       <div class="col-md-3">
-        <select name="curso" class="form-select form-select-sm">
+        <label class="visually-hidden" for="filtro-curso">Curso</label>
+        <select id="filtro-curso" name="curso" class="form-select form-select-sm">
           <option value="">Todos os cursos</option>
           {% for valor, label in cursos %}
-            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>
-              {{ label }}
-            </option>
+            <option value="{{ valor }}" {% if request.GET.curso == valor %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
-        <select name="ano" class="form-select form-select-sm">
+        <label class="visually-hidden" for="filtro-ano">Ano</label>
+        <select id="filtro-ano" name="ano" class="form-select form-select-sm">
           <option value="">Todos os anos</option>
           {% for valor, label in anos %}
-            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>
-              {{ label }}
-            </option>
+            <option value="{{ valor }}" {% if request.GET.ano == valor %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
-        <button type="submit" class="btn btn-dark btn-sm w-100">Filtrar</button>
+        <button type="submit" class="btn btn-primary btn-sm w-100">
+          <i class="bi bi-funnel me-1"></i>Filtrar
+        </button>
       </div>
       <div class="col-md-1">
-        <a href="{% url 'listar_alunos' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar">✕</a>
+        <a href="{% url 'listar_alunos' %}" class="btn btn-outline-secondary btn-sm w-100" title="Limpar filtros" aria-label="Limpar filtros">
+          <i class="bi bi-x-lg"></i>
+        </a>
       </div>
     </form>
 
-    {# ── Tabela ── #}
     {% if alunos %}
     <div class="table-responsive">
       <table class="table table-hover align-middle">
-        <thead class="table-dark">
+        <thead>
           <tr>
             <th class="ps-3">Matrícula</th>
             <th>Nome</th>
@@ -71,14 +70,12 @@
           <tr>
             <td class="ps-3 text-muted small font-monospace">{{ aluno.matricula }}</td>
             <td class="fw-semibold">
-              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="text-decoration-none text-dark">
-                {{ aluno.nome }}
-              </a>
+              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="text-decoration-none">{{ aluno.nome }}</a>
             </td>
             <td class="text-muted small">{{ aluno.turma }}</td>
             <td class="text-center">
               {% if aluno.total_ocorrencias > 0 %}
-                <span class="badge {% if aluno.total_ocorrencias >= 5 %}bg-danger{% elif aluno.total_ocorrencias >= 3 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                <span class="badge {% if aluno.total_ocorrencias >= 5 %}badge-soft-danger{% elif aluno.total_ocorrencias >= 3 %}badge-soft-warning{% else %}badge-soft-success{% endif %}">
                   {{ aluno.total_ocorrencias }}
                 </span>
               {% else %}
@@ -86,13 +83,13 @@
               {% endif %}
             </td>
             <td class="text-end pe-3">
-              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn btn-sm btn-outline-dark" title="Ver histórico">
+              <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn btn-sm btn-outline-secondary" title="Ver histórico" aria-label="Ver histórico de {{ aluno.nome }}">
                 <i class="bi bi-eye"></i>
               </a>
-              <a href="{% url 'editar_aluno' aluno.pk %}" class="btn btn-sm btn-outline-warning" title="Editar">
+              <a href="{% url 'editar_aluno' aluno.pk %}" class="btn btn-sm btn-outline-secondary" title="Editar" aria-label="Editar {{ aluno.nome }}">
                 <i class="bi bi-pencil"></i>
               </a>
-              <a href="{% url 'cadastrar' %}?aluno={{ aluno.pk }}" class="btn btn-sm btn-warning" title="Nova ocorrência">
+              <a href="{% url 'cadastrar' %}?aluno={{ aluno.pk }}" class="btn btn-sm btn-warning" title="Nova ocorrência" aria-label="Nova ocorrência para {{ aluno.nome }}">
                 <i class="bi bi-plus"></i>
               </a>
             </td>
@@ -105,8 +102,8 @@
     {% include "ocorrencias/partials/paginacao.html" %}
 
     {% else %}
-    <div class="text-center text-muted py-5">
-      <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
+    <div class="empty-state">
+      <i class="bi bi-people"></i>
       <p class="mb-0">Nenhum aluno encontrado.</p>
       {% if request.GET %}
         <a href="{% url 'listar_alunos' %}" class="btn btn-sm btn-outline-secondary mt-3">
@@ -120,5 +117,5 @@
     </div>
     {% endif %}
   </div>
-</div>
+</section>
 {% endblock %}
