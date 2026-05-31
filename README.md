@@ -684,48 +684,6 @@ Representa um registro de ocorrência escolar vinculado a um aluno.
 
 ---
 
-## 🖼️ Capturas de Tela
-
-Seção preparada para inserção futura de imagens do sistema.
-
-### Login
-
-```markdown
-![Tela de login](docs/screenshots/login.png)
-```
-
-### Dashboard
-
-```markdown
-![Dashboard](docs/screenshots/dashboard.png)
-```
-
-### Listagem de Ocorrências
-
-```markdown
-![Listagem de ocorrências](docs/screenshots/ocorrencias-listagem.png)
-```
-
-### Cadastro de Ocorrência
-
-```markdown
-![Cadastro de ocorrência](docs/screenshots/ocorrencias-cadastro.png)
-```
-
-### Listagem de Alunos
-
-```markdown
-![Listagem de alunos](docs/screenshots/alunos-listagem.png)
-```
-
-### Detalhe do Aluno
-
-```markdown
-![Detalhe do aluno](docs/screenshots/aluno-detalhe.png)
-```
-
----
-
 ## 🌐 API
 
 O projeto não possui uma API REST ou endpoints JSON implementados. As rotas existentes são endpoints web renderizados por templates Django.
@@ -821,55 +779,8 @@ Após salvar, a view redireciona para:
 /ocorrencias/
 ```
 
----
-
-## 🧪 Testes
-
-O projeto possui o arquivo:
-
-```text
-ocorrencias_project/ocorrencias/tests.py
-```
-
-No estado atual, não há testes implementados.
-
-### Executar Testes
-
-A partir da pasta `ocorrencias_project`:
-
-```bash
-python manage.py test
-```
-
-### Cobertura Identificada
-
-Cobertura automatizada identificada:
-
-```text
-0 testes implementados
-```
-
-### Sugestões de Testes
-
-Recomenda-se implementar testes para:
-
-- Criação de alunos.
-- Validação de matrícula única.
-- Validação de nome e matrícula em branco.
-- Criação de ocorrência com usuário autenticado.
-- Filtros da listagem de ocorrências.
-- Filtros da listagem de alunos.
-- Paginação.
-- Proteção das rotas com `login_required`.
-- Exclusão de ocorrência.
-- Proteção contra exclusão de aluno com ocorrência vinculada.
-- Views do dashboard e agregações por gravidade.
-
----
-
 ## 🚀 Melhorias Futuras
 
-- Adicionar `python-dotenv` ao `requirements.txt`.
 - Remover do versionamento arquivos gerados, como `db.sqlite3` e `__pycache__/`.
 - Implementar testes automatizados para models, forms, views e filtros.
 - Criar uma API REST com Django REST Framework, caso haja necessidade de integração externa.
@@ -904,14 +815,8 @@ https://github.com/ruan-codes/ocorrencias_escolares
 
 ## 📄 Licença
 
-Nenhum arquivo de licença foi identificado no repositório analisado.
+Distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
 
-Para projetos educacionais e aplicações web internas, uma opção simples e amplamente utilizada é a licença **MIT**, caso o autor deseje permitir uso, cópia, modificação e distribuição do código com baixa restrição.
-
-Exemplo recomendado:
-
-```text
-MIT License
-```
-
-Antes de publicar o projeto oficialmente, recomenda-se adicionar um arquivo `LICENSE` na raiz do repositório com o texto completo da licença escolhida.
+<div align="center">
+  <i>Desenvolvido para automatizar e inovar na educação.</i>
+</div>
